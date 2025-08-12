@@ -49,18 +49,7 @@ async function createUser(req, res) {
 
       await user.save();
 
-      // Create token here to send back after sign-up
-      const token = createToken(user._id);
-
-      res.status(201).json({ 
-        message: "User created successfully",
-        user: {
-          id: user._id,
-          name: user.name,
-          email: user.email,
-        },
-        token,
-      });
+      res.status(201).json({ message: "User created successfully" });
     }
   } catch (error) {
     res.status(500).json({ message: "Error creating user" });
