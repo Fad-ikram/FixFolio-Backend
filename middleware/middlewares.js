@@ -1,10 +1,13 @@
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken')
+
 
 const logger = (req, res, next) => {
-  const timestamp = new Date().toISOString();
-  console.log(`${timestamp} - ${req.method} ${req.url}`);
-  next(); // Important: call next() to continue
+    const timestamp = new Date().toISOString();
+    console.log(`${timestamp} - ${req.method} ${req.url}`);
+    next(); // Important: call next() to continue
 };
+
+
 
 const decodeToken = (token) => {
   try {
@@ -14,7 +17,8 @@ const decodeToken = (token) => {
   }
 };
 
-const isAuthenticated = (req, res, next) => {
+
+const isAuthenticated = (req, res, next) => {  
   const token = req.headers.authorization?.split(" ")[1];
   const decoded = decodeToken(token);
   if (!decoded) {
