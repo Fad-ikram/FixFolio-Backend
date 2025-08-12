@@ -49,7 +49,6 @@ app.get("/", (_req, res) => {
 });
 
 app.use("/users", userRouter);
-app.use("/tasks", isAuthenticated, router);
 
 mongoose
   .connect(
