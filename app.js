@@ -34,7 +34,7 @@ const swaggerUiOptions = {
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs, swaggerUiOptions)); */
 
 const corsOptions = {
-  origin: ["http://localhost:5173", "https://fixfolio.vercel.app"],
+  origin: ["http://localhost:5173", "https://fix-folio.netlify.app/"],
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
@@ -49,6 +49,11 @@ app.get("/", (_req, res) => {
 
 app.use("/users", userRouter);
 
+app.get("/api", (req, res) => {
+  res.json({ message: "API is working!" });
+});
+
+
 mongoose
   .connect(
     `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.f2hwez3.mongodb.net/fixfolio`
@@ -56,4 +61,9 @@ mongoose
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.error("Could not connect to MongoDB:", err));
 
-app.listen(3000, () => console.log("Server running on port 3000"));
+
+  if (process.env.NODE_ENV !== "production") {
+  app.listen(3000, () => console.log("Server running on localhost:3000"));
+}
+
+module.exports = app; // <-- Vercel needs this
