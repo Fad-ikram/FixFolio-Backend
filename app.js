@@ -5,7 +5,6 @@ const cors = require("cors");
 const app = express();
 const { logger, isAuthenticated } = require("./middleware/middlewares");
 
-// to use env variables
 require("dotenv").config();
     
 app.use(express.json());
@@ -52,9 +51,9 @@ app.use("/users", userRouter);
 
 mongoose
   .connect(
-    `mongodb+srv://${process.env.username}:${process.env.db_password}@cluster0.jcdyb7l.mongodb.net/`
+    `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.f2hwez3.mongodb.net/fixfolio`
   )
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.error("Could not connect to MongoDB:", err));
 
-app.listen(process.env.PORT, () => console.log(`Server running on ${process.env.PORT}`));
+app.listen(3000, () => console.log("Server running on port 3000"));

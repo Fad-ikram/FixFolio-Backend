@@ -35,29 +35,42 @@ async function getUserById(req, res) {
 async function createUser(req, res) {
   const { name, email, password } = req.body;
   try {
-    const existingUser = await User.findOne({ email: email });
+    const existingUser = await User.findOne({
+      email: email.trim().toLowerCase(),
+    });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
-    } else {
-      const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-      const user = new User({
-        name,
-        email,
-        password: hashedPassword,
-      });
-
-      await user.save();
-
-      res.status(201).json({ message: "User created successfully" });
     }
+
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    const user = new User({
+      name,
+      email: email.trim().toLowerCase(),
+      password: hashedPassword,
+    });
+
+    await user.save();
+
+    const token = createToken(user._id);
+
+    res.status(201).json({
+      message: "User created successfully",
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      },
+      token,
+    });
   } catch (error) {
+    console.error("Error creating user:", error);
     res.status(500).json({ message: "Error creating user" });
   }
 }
 
 async function getUserData(req, res) {
-  const userId = req.user && req.user.id;
+  const userId = req.user.id;
   if (!userId) {
     return res.status(401).json({ error: "User not authenticated" });
   }
@@ -67,7 +80,7 @@ async function getUserData(req, res) {
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-    res.status(200).json(user);
+    res.status(200).json({ user });
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
@@ -85,6 +98,7 @@ async function signInUser(req, res) {
       return res.status(401).json({ message: "Invalid credentials" });
     }
     const token = createToken(user._id);
+
     res.status(200).json({
       message: "Sign in successful",
       user: {
@@ -95,6 +109,7 @@ async function signInUser(req, res) {
       token,
     });
   } catch (error) {
+    console.error("SignIn error:", error);
     res.status(500).json({ message: "Error signing in" });
   }
 }
@@ -104,5 +119,5 @@ module.exports = {
   getUserById,
   createUser,
   signInUser,
-  getUserData
+  getUserData,
 };

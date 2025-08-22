@@ -24,8 +24,9 @@ const isAuthenticated = (req, res, next) => {
   if (!decoded) {
     return res.status(401).json({ message: "Unauthorized" });
   }
-  req.user = decoded;
+  req.user = decoded; 
   next();
 };
+
 
 module.exports = { logger, isAuthenticated };
