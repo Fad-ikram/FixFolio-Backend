@@ -1,12 +1,14 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const userRouter = require("./routes/users");
+const portfolioRouter = require("./routes/portfolio");
+
 const cors = require("cors");
 const app = express();
 const { logger, isAuthenticated } = require("./middleware/middlewares");
 
 require("dotenv").config();
-    
+
 app.use(express.json());
 
 /* const swaggerOptions = require("./swagger.json");
@@ -49,10 +51,10 @@ app.get("/", (_req, res) => {
 
 app.use("/users", userRouter);
 
-app.get("/api", (req, res) => {
-  res.json({ message: "API is working!" });
-});
 
+if (process.env.NODE_ENV !== "production") {
+  app.listen(3000, () => console.log("Server running on localhost:3000"));
+}
 
 mongoose
   .connect(
@@ -61,9 +63,8 @@ mongoose
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.error("Could not connect to MongoDB:", err));
 
-
-  if (process.env.NODE_ENV !== "production") {
+if (process.env.NODE_ENV !== "production") {
   app.listen(3000, () => console.log("Server running on localhost:3000"));
 }
 
-module.exports = app; // <-- Vercel needs this
+module.exports = app;
